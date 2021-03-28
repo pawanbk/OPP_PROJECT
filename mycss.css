@@ -1,0 +1,40 @@
+
+.form-wrapper
+{
+	width:400px;
+	margin:auto;
+	margin-top:20px;
+	align-self: center;
+	position: relative;
+	border: 0.5px solid silver; 
+	border-radius:25px;
+	margin-bottom:15px;
+}
+.wrapper{
+	width:50%;
+	margin:auto;
+}
+.btn-primary
+{
+  height:50px;
+}
+.form-group{
+	margin:15px;
+}
+form label {
+	margin-top:5px;
+}
+h2 {
+	font-size: 20px;
+	font-family: serif;
+	padding:10px;
+	text-align:center;
+}
+.links {
+	width:300px;
+	height:auto;
+	margin:auto;
+	position: relative;
+	text-align: center;
+}
+
