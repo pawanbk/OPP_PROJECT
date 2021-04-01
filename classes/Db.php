@@ -9,9 +9,10 @@ class Db {
 	        
 
 	 private function  __construct(){ 
+       global $config;
 	      try{
 
-	 		$this->_conn = new PDO('mysql:host=127.0.0.1;dbname=mydatabase', 'root', '');
+	 		$this->_conn = new PDO('mysql:host='.$config['db']['host'].';dbname='.$config['db']['dbname'], $config['db']['user'],$config['db']['pass']);
 	 	
 	 	     }
 	 	  catch(PDOException $e) {
