@@ -25,7 +25,7 @@ if(Input::exists()){
 
   ));
   if($validation->passed()){
-    $user = new user();
+    $user = new User();
     try{
 
       $user->create(array(

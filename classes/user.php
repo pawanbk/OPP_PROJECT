@@ -1,5 +1,5 @@
 <?php 
-class user {
+class User {
 	private $_db,
 	        $_data ,
 	        $_sessionName='users',
