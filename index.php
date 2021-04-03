@@ -1,22 +1,26 @@
-<?php
-require_once 'core/init.php';
-require_once 'links.php';
-if(Session::exists('success')){
-	echo '<div class="alert alert-success" role="alert">'
-          .Session::flash('success').
-         '</div>';
-}
-?>
 <!DOCTYPE html>
-<html>
-<head>
-	<title></title>
-</head>
-<body>
+<html>	
+	<?php
+		require_once 'core/init.php';
+		include 'header.php';
+		if (Session::exists('success'))
+		{
+			echo '<div class="alert alert-success" role="alert">'
+			.Session::flash('success').
+			'</div>';
+		}
+		if ($user->IsLoggedIn())
+		{
+			include 'activity.php';
+		}
+		else 
+		{
+			include 'register.php';
+		}
+		
+	?>
 
-	<?php include 'nav.php'; ?>
-
-</body>
+	</body>
 </html>
 
 

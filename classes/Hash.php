@@ -4,6 +4,5 @@ class Hash{
 		return hash('sha256', $string);
 
 	}
-
 }
 ?>

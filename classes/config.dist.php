@@ -4,8 +4,14 @@ return [
 		'host' => 'localhost',
 		'user' => '',
 		'pass' => '',
-		'dbname' => ''
+		'dbname' => '' 
 
+	],
+	'app' => [
+		'name' => ''
+	],
+	'session' =>[
+		 'session_id' => ''
 	]
 
 ];
