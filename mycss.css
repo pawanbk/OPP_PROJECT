@@ -24,6 +24,12 @@ body {
 .form-group{
   margin:15px;
 }
+.form-title h2{
+  font-size: 24px;
+}
+.alert{
+  margin-top:-15px;
+}
 form label {
   margin-top:5px;
 }

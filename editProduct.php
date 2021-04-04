@@ -53,13 +53,16 @@ if(Input::exists())
 }
 ?>
 <div class="wrapper">
-	<h2> Edit Project </h2>
 	<form method="post">
+		<div class="form-title">
+			<h2>Update <b>Project </b></h2>
+		</div>
 		<div class="form-group">
 			<label>Project name</label>
 			<input type="text" class="form-control" name="proj_name" value="<?php echo $proj_name;?>">
 		</div>
 		<div class="form-group">
+			<label>Budget</label>
 			<input type="text" class="form-control" name="budget" value="<?php echo $budget;?>">
 			<input type="hidden" class="form-control" name="proj_id" value=<?php echo $_GET['edit'];?>>
 		</div>

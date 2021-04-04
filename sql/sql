@@ -1,0 +1,31 @@
+--
+-- Database: `mydatabase`
+--
+CREATE DATABASE IF NOT EXISTS `mydatabase` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+USE `mydatabase`;
+
+-- --------------------------------------------------------
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(100) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `username` varchar(20) NOT NULL,
+  `salt` varchar(255) NOT NULL,
+  `Date` date NOT NULL,
+  `user_pass` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Table structure for table `project`
+--
+
+CREATE TABLE `project` (
+  `proj_id` int(100) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `proj_name` varchar(40) DEFAULT NULL,
+  `user_id` int(100) DEFAULT NULL,
+  `proj_budget` int(11) NOT NULL,
+  FOREIGN KEY (user_id) REFERENCES `users`(user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+

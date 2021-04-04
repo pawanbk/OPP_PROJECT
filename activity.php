@@ -40,13 +40,16 @@ if(Input::exists())
 ?>
 
 <div class="container">
-	<h2>Add Project </h2>
-	<form method="post">
+	<form  method="post">
+		<div class="form-title">
+			<h2>Add <b>Project </b></h2>
+		</div>
 		<div class="form-group">
 			<label>Project name</label>
 			<input type="text" class="form-control" name="proj_name">
 		</div>
 		<div class="form-group">
+			<label>Budget</label>
 			<input type="text" class="form-control" name="budget">
 		</div>
 		<div class="form-group">
