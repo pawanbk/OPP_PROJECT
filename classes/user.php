@@ -2,6 +2,7 @@
 class User {
 	private $_db,
 	$_data ,
+	$_count,
 	$_isLoggedIn = false;
 
 	public function __construct($user=null){
@@ -10,9 +11,9 @@ class User {
 
 		if (!$user)
 		{
-			if (Session::exists($config['session']['session_id']))
+			if (Session::exists('user_id'))
 			{
-				$user = Session::get($config['session']['session_id']);
+				$user = Session::get('user_id');
 				if ($this->find($user))
 				{
 					$this->_isLoggedIn=true;
@@ -32,7 +33,7 @@ class User {
 	public function find($user=null){  
 		if ($user)
 		{
-			$field = (is_numeric($user)) ? 'user_id' : 'username';
+			$field = (is_numeric($user)) ? 'user_id' : 'email';
 			$data = $this->_db->get('users',array($field,'=',$user));
 			if ($data->count())
 			{
@@ -51,16 +52,27 @@ class User {
 	}
 
 	public function login($email=null, $pass=null){
-        global $config;
 		$user = $this->find($email);
 		if ($user)
 		{
 			if ($this->data()->user_pass === Hash::make($pass))
 			{
-				Session::put($config['session']['session_id'], $this->data()->user_id);
+				Session::put('user_id', $this->data()->user_id);
 				return true;
 			}
 		}
+		return false;
+	}
+
+	public function search($where=array()){
+			$data = $this->_db->get('users',$where);
+			if($data->count())
+			{
+				$this->_data = $data->results();
+				$this->_count = $data->count();
+				return true;
+			}
+
 		return false;
 	}
 
@@ -77,13 +89,16 @@ class User {
 
 	public function logout(){
 		global $config;
-		return Session::delete($config['session']['session_id']);
+		return Session::delete('user_id');
 	}
 
 	public function data(){
 		return $this->_data;
 	}
 
+	public function count(){
+		return $this->_count;
+	}
 	public function isLoggedIn(){
 		return $this->_isLoggedIn;
 	}

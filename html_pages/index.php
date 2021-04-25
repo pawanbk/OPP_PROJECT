@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>	
 	<?php
-		require_once 'core/init.php';
-		include 'header.php';
+		require_once '../core/init.php';
+		include "{$config['path']['p3']}header.php";
 		if (Session::exists('success'))
 		{
 			echo '<div class="alert alert-success" role="alert">'
@@ -11,16 +11,16 @@
 		}
 		if ($user->IsLoggedIn())
 		{
-			include 'activity.php';
+			include '../project/view.php';
 		}
 		else 
 		{
-			include 'register.php';
+			include '../user/login.php';
 		}
 		
 	?>
-
 	</body>
+	<?php include "{$config['path']['p3']}footer.php"; ?>
 </html>
 
 

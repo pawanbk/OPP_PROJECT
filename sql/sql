@@ -1,31 +1,311 @@
+-- phpMyAdmin SQL Dump
+-- version 5.1.0
+-- https://www.phpmyadmin.net/
+--
+-- Host: 127.0.0.1
+-- Generation Time: Apr 25, 2021 at 08:42 AM
+-- Server version: 10.4.18-MariaDB
+-- PHP Version: 8.0.3
+
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
+/*!40101 SET NAMES utf8mb4 */;
+
 --
 -- Database: `mydatabase`
 --
-CREATE DATABASE IF NOT EXISTS `mydatabase` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
-USE `mydatabase`;
 
 -- --------------------------------------------------------
+
 --
--- Table structure for table `users`
+-- Table structure for table `attachment`
 --
 
-CREATE TABLE `users` (
-  `user_id` int(100) AUTO_INCREMENT NOT NULL PRIMARY KEY,
-  `username` varchar(20) NOT NULL,
-  `salt` varchar(255) NOT NULL,
-  `Date` date NOT NULL,
-  `user_pass` varchar(255) NOT NULL
+CREATE TABLE `attachment` (
+  `id` int(100) NOT NULL,
+  `attachment` varchar(1000) DEFAULT NULL,
+  `uploaded_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
+-- Table structure for table `comment`
+--
+
+CREATE TABLE `comment` (
+  `id` int(100) NOT NULL,
+  `comments` text DEFAULT NULL,
+  `date` datetime NOT NULL,
+  `task_id` int(100) DEFAULT NULL,
+  `user_id` int(100) DEFAULT NULL,
+  `likes` int(255) DEFAULT NULL,
+  `dislikes` int(255) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `milestone`
+--
+
+CREATE TABLE `milestone` (
+  `id` int(100) NOT NULL,
+  `name` varchar(255) DEFAULT NULL,
+  `user_id` int(100) DEFAULT NULL,
+  `due_date` date DEFAULT NULL,
+  `status` int(10) NOT NULL,
+  `proj_id` int(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
 
 --
 -- Table structure for table `project`
 --
 
 CREATE TABLE `project` (
-  `proj_id` int(100) AUTO_INCREMENT NOT NULL PRIMARY KEY,
+  `proj_id` int(100) NOT NULL,
   `proj_name` varchar(40) DEFAULT NULL,
   `user_id` int(100) DEFAULT NULL,
-  `proj_budget` int(11) NOT NULL,
-  FOREIGN KEY (user_id) REFERENCES `users`(user_id)
+  `due_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+
+--
+-- Table structure for table `status`
+--
+
+CREATE TABLE `status` (
+  `id` int(100) NOT NULL,
+  `name` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task`
+--
+
+CREATE TABLE `task` (
+  `id` int(50) NOT NULL,
+  `name` varchar(20) NOT NULL,
+  `due_date` date DEFAULT NULL,
+  `description` text DEFAULT NULL,
+  `attachments` varchar(1000) DEFAULT NULL,
+  `type` varchar(30) NOT NULL,
+  `status` int(50) DEFAULT NULL,
+  `m_id` int(100) DEFAULT NULL,
+  `created_by` int(100) DEFAULT NULL,
+  `status_id` int(50) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
+-- Table structure for table `task_attachment`
+--
+
+CREATE TABLE `task_attachment` (
+  `attach_id` int(100) DEFAULT NULL,
+  `task_id` int(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `users`
+--
+
+CREATE TABLE `users` (
+  `user_id` int(100) NOT NULL,
+  `f_name` varchar(20) NOT NULL,
+  `l_name` varchar(20) NOT NULL,
+  `email` varchar(100) NOT NULL,
+  `salt` varchar(255) NOT NULL,
+  `Date` date NOT NULL,
+  `user_pass` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `users`
+--
+
+--
+-- Table structure for table `user_task`
+--
+
+CREATE TABLE `user_task` (
+  `task_id` int(100) DEFAULT NULL,
+  `user_id` int(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
+--
+-- Indexes for dumped tables
+--
+
+--
+-- Indexes for table `attachment`
+--
+ALTER TABLE `attachment`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `comment`
+--
+ALTER TABLE `comment`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `milestone`
+--
+ALTER TABLE `milestone`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `proj_id` (`proj_id`);
+
+--
+-- Indexes for table `project`
+--
+ALTER TABLE `project`
+  ADD PRIMARY KEY (`proj_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Indexes for table `status`
+--
+ALTER TABLE `status`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `task`
+--
+ALTER TABLE `task`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `m_id` (`m_id`),
+  ADD KEY `created_by` (`created_by`),
+  ADD KEY `status_id` (`status_id`);
+
+--
+-- Indexes for table `task_attachment`
+--
+ALTER TABLE `task_attachment`
+  ADD KEY `attach_id` (`attach_id`),
+  ADD KEY `task_id` (`task_id`);
+
+--
+-- Indexes for table `users`
+--
+ALTER TABLE `users`
+  ADD PRIMARY KEY (`user_id`);
+
+--
+-- Indexes for table `user_task`
+--
+ALTER TABLE `user_task`
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- AUTO_INCREMENT for dumped tables
+--
+
+--
+-- AUTO_INCREMENT for table `attachment`
+--
+ALTER TABLE `attachment`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+
+--
+-- AUTO_INCREMENT for table `comment`
+--
+ALTER TABLE `comment`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+
+--
+-- AUTO_INCREMENT for table `milestone`
+--
+ALTER TABLE `milestone`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+
+--
+-- AUTO_INCREMENT for table `project`
+--
+ALTER TABLE `project`
+  MODIFY `proj_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+
+--
+-- AUTO_INCREMENT for table `status`
+--
+ALTER TABLE `status`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT for table `task`
+--
+ALTER TABLE `task`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=859;
+
+--
+-- AUTO_INCREMENT for table `users`
+--
+ALTER TABLE `users`
+  MODIFY `user_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `comment`
+--
+ALTER TABLE `comment`
+  ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `milestone`
+--
+ALTER TABLE `milestone`
+  ADD CONSTRAINT `milestone_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `milestone_ibfk_2` FOREIGN KEY (`proj_id`) REFERENCES `project` (`proj_id`);
+
+--
+-- Constraints for table `project`
+--
+ALTER TABLE `project`
+  ADD CONSTRAINT `project_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `task`
+--
+ALTER TABLE `task`
+  ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`m_id`) REFERENCES `milestone` (`id`),
+  ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`);
+
+--
+-- Constraints for table `task_attachment`
+--
+ALTER TABLE `task_attachment`
+  ADD CONSTRAINT `task_attachment_ibfk_1` FOREIGN KEY (`attach_id`) REFERENCES `attachment` (`id`),
+  ADD CONSTRAINT `task_attachment_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`);
+
+--
+-- Constraints for table `user_task`
+--
+ALTER TABLE `user_task`
+  ADD CONSTRAINT `user_task_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
+  ADD CONSTRAINT `user_task_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+COMMIT;
+
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

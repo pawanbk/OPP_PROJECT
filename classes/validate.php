@@ -9,7 +9,6 @@ class Validate {
 	{
 		$this->_db = Db::getInstance();
 	}
-
 	public function check($source, $items=array())
 	{
 		foreach($items as $item => $rules){

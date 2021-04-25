@@ -6,7 +6,6 @@ class Project {
 
 	public function __construct(){
 		$this->_db = Db::getInstance();
-		$this->getProjectByUser();
 
 	}
 
@@ -14,10 +13,8 @@ class Project {
 		$this->_db->insert('project',$fields);
 		return true;
 	}
-	public function getProjectByUser(){
-		global $config;
-		$where = array('user_id','=',Session::get($config['session']['session_id']));
-		$data = $this->_db->get('project',$where);
+	public function getProjectByUser($fields=array()){
+		$data = $this->_db->get('project',$fields);
 		$this->_data = $data->results();
 		$this->_count = $data->count();
 	}
@@ -29,15 +26,16 @@ class Project {
 		else{
 			$data = $this->_db->get('project',$where);
 			$this->_data = $data->results();
+			$this->_count = $data->count();
 			return true;
 		}
 		return false;
 
 	}
-	public function removeProject($where=array()){
+	public function remove($where=array()){
     	return $this->_db->delete('project',$where);
 	}
-	public function editProject($id,$fields=array())
+	public function update($id,$fields=array())
 	{
 		if (!$this->_db->update('project',$id,$fields,'proj_id'))
 		{

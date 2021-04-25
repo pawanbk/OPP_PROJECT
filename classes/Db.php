@@ -7,7 +7,8 @@ class Db {
     $_query,
     $_results,
     $_count=0,
-    $_error=false;
+    $_error=false,
+    $_insertId;
 
     private function  __construct(){ 
         global $config;
@@ -58,18 +59,48 @@ class Db {
             return $this;
     }
 
-    public function action($action,$table,$where=array()){
+    public function action($action,$table,$where=array(), $string = ''){
         if (count($where) === 3)
         {
             $field    = $where[0];
             $operator = $where[1];
             $value    = $where[2];
-            $operators = array('<', '>', '=', '<=', '>=');
+            $operators = array('<', '>', '=', '<=', '>=','like');
 
             if (in_array($operator, $operators))
             {
                 $sql = "{$action} FROM {$table} WHERE {$field} {$operator} ?";
+                 if($string !='')
+                {
+                    $sql .= ' '.$string;
+                }
                 if (!$this->query($sql,array($value))->error())
+                {
+                    return $this;
+                }
+
+            }
+            
+        }
+        else if(count($where)===7)
+        {
+            $field1    = $where[0];
+            $operator1 = $where[1];
+            $value1    = $where[2];
+            $cat       = $where[3];
+            $field2    = $where[4];
+            $operator2 = $where[5];
+            $value2    = $where[6];
+            $operators = array('<', '>', '=', '<=', '>=','like');
+
+            if (in_array($operator1, $operators))
+            {
+                $sql = "{$action} FROM {$table} WHERE {$field1} {$operator1} ? {$cat} {$field2} {$operator2} ?  ";
+                 if($string !='')
+                {
+                    $sql .= ' '.$string;
+                }
+                if (!$this->query($sql,array($value1,$value2))->error())
                 {
                     return $this;
                 }
@@ -79,6 +110,10 @@ class Db {
 
         else {
             $sql = "{$action} FROM {$table}";
+            if($string !='')
+            {
+                $sql .= ' '.$string;
+            }
             if (!$this->query($sql,$where)->error())
             {
                 return $this;
@@ -89,8 +124,8 @@ class Db {
 
     }
 
-    public function get($table, $where){
-        return $this->action('SELECT *',$table, $where);
+    public function get($table, $where=array(),$string=''){
+        return $this->action('SELECT *',$table, $where, $string);
     }
 
     public function delete($table, $where)
@@ -119,10 +154,6 @@ class Db {
 
     }
 
-    public function getAll($table){
-        return $this->action('SELECT *',$table);
-    }
-
     public function insert($table, $fields=array())
     {
         if (count($fields))
@@ -133,7 +164,7 @@ class Db {
             foreach ($fields as $field){
                 $values .= '?';
 
-                if ($x<count($fields)){
+                if ($x < count($fields)){
                     $values .= ',';
 
                 }
@@ -141,6 +172,7 @@ class Db {
             }
 
             $sql= "INSERT INTO {$table} (`" . implode('`,`',$keys). "`) VALUES ({$values})";
+
             if (!$this->query($sql,$fields)->error()){
                 return true;
             }
