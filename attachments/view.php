@@ -7,7 +7,7 @@ $task_id = $_GET['task_id'];
 $task_attach->get(array('task_id','=',$task_id)); 
 ?>
 
-<div class='container'>
+<div class='box'>
 	<div class='box-wrapper'>
 		<div class='form-box'>
 			<form class='form' action='handle.php' method='post' enctype='multipart/form-data'>

@@ -44,7 +44,7 @@ if(Input::exists())
         'date' => date("Y-m-d")
       ));
       Session::flash('success', 'You registered succesfully. Please login');
-      Redirect::to('index.php');
+      Redirect::to($config['path']['p1']);
 
     } catch(PDOException $e){
       die($e->getMessage());
@@ -89,7 +89,7 @@ if(Input::exists())
           <input type="submit" value="Register" class="form-control btn btn-primary"> 
         </div>  
         <div class='links'>
-          <strong> Already have an Account? <a href="../html_pages/index.php">Login</a></strong>
+          <strong> Already have an Account? <a href="<?php echo $config['path']['p1']?>">Login</a></strong>
         </div>  
         <p>By creating an account, you agree to the Terms of Service. For more information about GitHub's privacy practices, see the GitHub Privacy Statement. We'll occasionally send you account-related emails.</p> 
       </form>

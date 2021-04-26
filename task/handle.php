@@ -92,6 +92,7 @@ if(isset($_POST['delete']))
 	$t->remove(array('id','=', $_POST['delete']));
 	Session::flash('success', 'Task has been deleted.');	
 }
+
 if(isset($_POST['update']))
 {
 	$v->check($_POST,

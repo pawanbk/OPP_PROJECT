@@ -6,7 +6,7 @@ $task_id = $_GET['id'];
 $ut = new User_task();
 $ut->get(array('task_id', '=',$task_id));
 ?>
-<div class="container">
+<div class="box">
 	<?php if (Session::exists('success'))
 	{
 	echo "<div class='msg-flash alert alert-success'><p>"
@@ -26,10 +26,10 @@ $ut->get(array('task_id', '=',$task_id));
 					.Session::flash('error')."</p>";
 				}?>
 				<div class="form-group">
-					<label>Assign user</label>
-					<input class="form-control" type="text" id="autoComplete" placeholder="search...">
+					<label>Search user</label>
+					<input class="form-control" type="text" id="autoComplete" autocomplete="off" placeholder="search and select user to assign...">
 				</div>
-				<div class='lists' id='user-list'></div>
+				<div class='form-group' id='user-list'></div>
 				<div class="form-group">
 					<input type="hidden" id='id' name='user_id'>
 					<input type="hidden" name='task_id' value="<?php echo $task_id?>">
@@ -43,7 +43,7 @@ $ut->get(array('task_id', '=',$task_id));
 	<div class="table-wrapper">
 		<table class='table'>
 			<div class="table-title">
-				<h3> Assigned User List</h3>
+				<h3> Assignee List</h3>
 			</div>
 			<thead>
 				<tr>
@@ -74,7 +74,14 @@ $ut->get(array('task_id', '=',$task_id));
 				<?php $x++;}?>
 			</tbody>
 		</table>
-	</div>
-		
-<?php }?>
+	</div>	
+<?php }
+	else {?>
+		<div class="empty-div"> 
+			<div class="content">
+				<h3>No users Assigned!!</h3>
+				<p>There are no users assigned at this moment. Once you assign user, list of Assignee will be available in this section.</p>
+			</div>
+		</div>
+	<?php }?>
 </div>

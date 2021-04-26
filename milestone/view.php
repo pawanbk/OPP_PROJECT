@@ -2,24 +2,7 @@
 require_once '../core/init.php';
 include "{$config['path']['p3']}header.php"; 
 $proj_id = $_GET['proj_id'];
-$m= new Milestone();
 $m->get(array('proj_id','=', $proj_id));
-$update = false;
-$name     = '';
-$due_date = '';
-$id = '';
-if(isset($_GET['edit']))
-{
-	$update = true;
-	$m->get(array('id','=',$_GET['edit']));
-	foreach($m->data() as $data)
-	{
-		$name     = $data->name;
-		$due_date = $data->due_date;
-		$id       = $data->id;
-	}
-
-}
 ?>
 <?php if (Session::exists('success'))
 				{
@@ -27,16 +10,12 @@ if(isset($_GET['edit']))
 					.Session::flash('success').
 					"</div>";
 				}?>
-<div class="container">
+<div class="box">
 	<div class='box-wrapper'>
 		<div class="form-box">
 			<form  method="post" action="handle.php">
 				<div class="form-title">
-					<?php if($update == false):?>
-						<h3>Create Milestone</h3>
-					<?php else:?>
-						<h3> Update Milestone</h3>
-					<?php endif;?>
+					<h3>Create Milestone</h3>
 				</div>
 				<?php if (Session::exists('errors'))
 					{
@@ -46,20 +25,15 @@ if(isset($_GET['edit']))
 					}?>
 				<div class="form-group">
 					<label>Name</label>
-					<input type="text" class="form-control" name="name" value="<?php echo $name?>">
+					<input type="text" class="form-control" name="name">
 				</div>
 				<div class="form-group">
 					<label>Due date</label>
-					<input type="date" class="form-control" name="date" value="<?php echo $due_date?>">
+					<input type="date" class="form-control" name="date" >
 				</div>
 				<div class="form-group">
-					<input type="hidden" name='proj_id' value="<?php echo $proj_id?>">
-					<?php if($update == false):?>
-						<button type="submit" name= 'add' class="btn btn-info">ADD</button>
-					<?php else:?>
-						<input type="hidden" name='id' value="<?php echo $id?>">
-						<button type="submit" name= 'update' class="btn btn-primary">Update</button>
-					<?php endif;?>
+					<input type="hidden" name="proj_id" value="<?php echo $proj_id?>">
+					<button type="submit" name= 'add' class="btn btn-info">ADD</button>
 				</div>
 			</form>
 		</div>
@@ -103,7 +77,7 @@ if(isset($_GET['edit']))
 						?>
 						</td>
 						<td>
-							<a href="?edit=<?php echo $data->id?>&proj_id=<?php echo $proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
+							<a href="edit.php?edit=<?php echo $data->id?>&proj_id=<?php echo $proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
 							<a data-delete-id='<?php echo $data->id?>' class="delete"><i class="material-icons" >&#xE872;</i></a>
 						</td>
 					</tr> 
@@ -116,8 +90,11 @@ if(isset($_GET['edit']))
 	<?php }
 	else {?>
 		<div class="empty-div"> 
-		<h3>No milestone available!!</h3>
-		<p>There are no Milestone available for this project at this moment. Once you create milestone, they will be available in this Section and you can set them according to the needs of project. Also, will be able to Edit, Delete and View task related to this project.</p>
+			<div class="content">
+				<h3>No milestone available!!</h3>
+				<p>There are no Milestone available for this project at this moment. Once you create milestone, they will be available in this Section and you can set them according to the needs of project. Also, will be able to Edit, Delete and View task related to this project.</p>
+				<img src="../upload/milestone.jpg" width="400" height="200"><img src="../upload/image2.png" width="400" height="200">
+			</div>
 		</div>
 	<?php }?>
 	<div class="modal" id="Modal">

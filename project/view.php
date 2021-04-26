@@ -27,14 +27,14 @@ if(isset($_GET['edit']))
 	}	
 }
 ?>
-
-<div class="container">
-	<?php if (Session::exists('success'))
+<?php if (Session::exists('success'))
 				{
 					echo "<div class='msg-flash alert alert-success'><p>"
 					.Session::flash('success').
 					"</p></div>";
 				}?>
+
+<div class="box">
 	<div class='box-wrapper'>
 		<div class="form-box">
 			<form  method="post" action='../project/handle.php'>
@@ -53,11 +53,7 @@ if(isset($_GET['edit']))
 					}?>
 				<div class="form-group">
 					<label>Project name</label>
-					<?php if($update == true):?>
-						<input type="text" class="form-control" name="proj_name" value="<?php echo $proj_name;?>">
-					<?php else:?>
-						<input type="text" class="form-control" name="proj_name" value="<?php echo Input::get('proj_name')?>">
-					<?php endif;?>
+					<input type="text" class="form-control" name="proj_name" value="<?php echo $proj_name;?>">
 				</div>
 				<div class="form-group">
 					<label>Due date</label>
@@ -116,8 +112,10 @@ if(isset($_GET['edit']))
 	<?php }
 	else {?>
 		<div class="empty-div"> 
-			<h3>No Projects available!!</h3>
-			<p>There are no projects available at this moment. Once you create Project, they will be available in this section and you can create and set Milestone according to the needs of each project. Also, will be able to Edit, Delete projects.</p>
+			<div class="content">
+				<h3>No Projects available!!</h3>
+				<p>There are no projects available at this moment. Once you create Project, they will be available in this section and you can create and set Milestone according to the needs of each project. Also, will be able to Edit, Delete projects.</p>
+			</div>
 		</div>
 	<?php }?>
 

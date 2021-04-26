@@ -23,23 +23,23 @@ if(isset($_POST['assign']))
 if(isset($_POST['search']))
 {
 	$name = '%'.$_POST['search'].'%';
-	$u->search(array('f_name','like',$name));
+	$u->search(array('f_name','like',$name,'OR','l_name','like',$name));
 	$result = '';
 	if($u->count())
 	{	
-		$result = '<ul class="user-list">';
+		$result = '<ul class="list-group">';
 		foreach($u->data() as $data)
 		{
 			$f_name = $data->f_name;
 			$l_name = $data->l_name;
-			$fullname = $f_name.' '. $l_name;
-			$result .= "<li data-user-id='".$data->user_id."'>".$fullname."</li>";
+			$fullname = ucfirst($f_name.' '. $l_name);
+			$result .= "<li class='list-group-item' data-user-id='".$data->user_id."'>".$fullname."</li>";
 		}
 		$result .= '</ul>';
 	}
 	else 
 		{
-			$result = 'no user found.';
+			$result = '<ul class="user-list"><li>no user found</li></ul>';
 		}
 		echo $result;
 }

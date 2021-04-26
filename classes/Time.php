@@ -32,7 +32,7 @@ class Time{
 		}
 		else if($diff_timestamp >=3600 && $diff_timestamp<86400)
 		{
-			return round($diff_timestamp/3600).'hours ago';
+			return round($diff_timestamp/3600).' hours ago';
 		}
 		else if($diff_timestamp >= 86400 && $diff_timestamp<(86400*30))
 		{

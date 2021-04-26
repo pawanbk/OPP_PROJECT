@@ -30,12 +30,12 @@ if(isset($_POST['add']))
 	    			'due_date' => $date_formated
 	    		));
 	         Session::flash('success', 'Project has been created.');
-	         Redirect::to('../html_pages/index.php');
+	         Redirect::to($config['path']['p1']);
 			}
 			else
 			{
 				Session::flash('errors', 'Select valid due date.');
-	        	Redirect::to('../html_pages/index.php');
+	        	Redirect::to($config['path']['p1']);
 			}
 	       
 		}
@@ -44,7 +44,7 @@ if(isset($_POST['add']))
 			foreach($validation->getError() as $err)
 			{
 				Session::put('errors',$err);
-				Redirect::to('../html_pages/index.php');
+				Redirect::to($config['path']['p1']);
 			}
 			
 		}
@@ -69,15 +69,15 @@ if (isset($_POST['delete']))
 					$ta->remove(array('task_id','=',$task_id));
 					$c->remove(array('task_id','=',$task_id));
 				}
-
+				$c->remove(array('m_id','=',$m_id));
 				$t->remove(array('m_id','=',$m_id));
 			    $m->remove(array('proj_id','=',$_POST['delete']));
 			    $p->remove(array('proj_id','=',$_POST['delete']));
 				Session::flash('success','Project has been removed.');
 			}
 			else
-			{
-				$t->remove(array('m_id','=',$m_id));
+			{	
+				$c->remove(array('m_id','=',$m_id));
 			    $m->remove(array('proj_id','=',$_POST['delete']));
 			    $p->remove(array('proj_id','=',$_POST['delete']));
 				Session::flash('success','Project has been removed.');
@@ -115,7 +115,7 @@ if(isset($_POST['update']))
 	    			'due_date' => Input::get('due_date')
 	    		));
 	         Session::flash('success', 'Project has been updated.');
-	         Redirect::to('../html_pages/index.php');
+	         Redirect::to($config['path']['p1']);
 		}
 		else
 		{

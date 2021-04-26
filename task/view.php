@@ -2,25 +2,7 @@
 require_once '../core/init.php';
 include "{$config['path']['p3']}header.php";
 $id = $_GET['m_id'];
-$task = new Task();
-$task->get(array('m_id','=',$id));
-$task_id='';
-$name ='';
-$description='';
-$due_date ='';
-$update =false;
-if(isset($_GET['edit']))
-{
-	$update = true;
-	$task->get(array('id','=',$_GET['edit']));
-	foreach($task->data() as $data)
-	{
-		$task_id     = $data->id;
-		$name        = $data->name;
-		$description = $data->description;
-		$due_date    = $data->due_date;
-	}
-}
+$t->get(array('m_id','=',$id));
 ?>
 <?php if (Session::exists('success'))
 				{
@@ -28,8 +10,7 @@ if(isset($_GET['edit']))
 					.Session::flash('success').
 					"</div>";
 				}?>
-<input type="hidden" name='m_id' value="<?php echo $id?>">
-<div class="container">
+<div class="box">
 	<div  class='addModal' id="addModal">
 	  <div class="modal-dialog" >
 	    <div class="modal-content">  
@@ -52,7 +33,6 @@ if(isset($_GET['edit']))
 					<div class='form-group' id='user-list'></div>
 					<div class="form-group">
 						<div class="input-group">
-							<input type="hidden" name="m_id" value="<?php echo $id?>">
 					  		<textarea class="form-control" name="description" id="editor2"></textarea>
 						</div>
 					</div>
@@ -60,6 +40,7 @@ if(isset($_GET['edit']))
 						<input type="date" class="form-control" name="date">
 					</div>
 				    <div class="form-group">
+				    	<input type="hidden" name="m_id" value="<?php echo $id?>">
 						<input type="hidden" id='id' name='assigned_user' >
 						<button type="submit" name='add' class="btn btn-info">ADD</button>
 					</div>
@@ -69,7 +50,7 @@ if(isset($_GET['edit']))
 	  </div>
 	</div>
 	<button style='float:right' id='addbtn' class="btn btn-info">Add task</button>
-<?php if($task->count()){?>
+<?php if($t->count()){?>
 		<h3 align='center'>Task List</h3>
 	<table class="table table-striped table-hover">
 		<thead>
@@ -89,15 +70,15 @@ if(isset($_GET['edit']))
 		<tbody>
 	<?php 
 		$x=1;
-		foreach($task->data() as $data)
+		foreach($t->data() as $data)
 		{?>
 			<td><?php echo $x?></td>
 			<td><?php echo $data->name;?></td>
 			<td><?php echo $data->description;?></td>
 			<td><?php echo $data->due_date?></td>
-			<?php if($task->createdBy($data->id)){
+			<?php if($t->createdBy($data->id)){
 			?>
-			<td><?php echo $task->data();}?></td>
+			<td><?php echo $t->data();}?></td>
 			<td><?php echo $data->type?></td>
 			<td>
 				<form method="get" action="handle.php">
@@ -123,7 +104,7 @@ if(isset($_GET['edit']))
 			</td>
 			<td>
 				<a href="edit.php?edit=<?php echo $data->id?>&m_id=<?php echo $id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
-				<a data-delete-id="<?php echo $data->id?>" class="delete"><i class="material-icons" title="Delete">&#xE872;</i></a>
+				<a data-delete-id="<?php echo $data->id?>" class="delete"><i class="material-icons">&#xE872;</i></a>
 			</td>
 		</tr> 
 			
@@ -133,14 +114,15 @@ if(isset($_GET['edit']))
 			
 		</tbody>
 	</table>
-</div>
 <?php }else {?>
 	<div style='margin:0;width:100%' class="empty-div"> 
-		<h3>No tasks available!!</h3>
-		<p>There are no tasks available for this particular milestone at this moment. Once you create tasks, they will be available in this section and you can set them according to the needs of project and milestone. Also, will be able to Edit, Delete tasks.</p>
+		<div class='content'>
+			<h3>No tasks available!!</h3>
+			<p>There are no tasks available for this particular milestone at this moment. Once you create tasks, they will be available in this section and you can set them according to the needs of project and milestone. Also, will be able to Edit, Delete tasks.</p>
+			<img src="../upload/task2.jpg" width="400" height="200"><img src="../upload/task1.png" width="400" height="200">
+		</div>
 	</div>
 <?php }?>
-
 <div class="modal" id="Modal">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -162,6 +144,7 @@ if(isset($_GET['edit']))
     </div>
   </div>
 </div>
+</div>
 <script type="text/javascript"> 
 	$('#addbtn').click(function(){
 		$('#addModal').show();
@@ -182,9 +165,6 @@ if(isset($_GET['edit']))
 		$('.close').click(function(){
 			$('#Modal').hide();
 		})
-		$(window).click(function(){
-			$('#Modal').hide();
-		});
 	});
 
 </script>

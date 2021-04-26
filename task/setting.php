@@ -60,7 +60,7 @@ if(isset($_GET['delete']))
 	}
 }
 ?>
-<div class="container">
+<div class="box">
 	<div class='box-wrapper'>
 		<div class="form-box">
 			<form  method="post" action="">
@@ -121,8 +121,10 @@ if(isset($_GET['delete']))
 		</div>
 	<?php else:?>
 		<div class="empty-div"> 
-			<h3>No status created for task!!</h3>
-			<p>There are no projects available at this moment. Once you create Project, they will be available in this section and you can create and set Milestone according to the needs of each project. Also, will be able to Edit, Delete projects.</p>
+			<div class="content">
+				<h3>No status created for task!!</h3>
+				<p>There are no projects available at this moment. Once you create Project, they will be available in this section and you can create and set Milestone according to the needs of each project. Also, will be able to Edit, Delete projects.</p>
+			</div>
 		</div>
 	<?php endif;?>
 </div>

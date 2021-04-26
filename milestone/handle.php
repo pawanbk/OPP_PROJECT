@@ -93,7 +93,7 @@ if(isset($_POST['update']))
 		{
 			if($time->diffDate($date_format))
 			{
-				$m->update(Input::get('id'), array('name'=> Input::get('name'), 'due_date' => $date_format));
+				$m->update(Input::get('m_id'), array('name'=> Input::get('name'), 'due_date' => $date_format));
 				Session::flash('success','Milestone has been updated.');
 				Redirect::to('view.php?proj_id='.Input::get('proj_id'));
 			}
@@ -129,14 +129,34 @@ if(isset($_POST['delete']))
 			$ta->remove(array('task_id','=',$task_id));
 			$c->remove(array('task_id','=',$task_id));
 		}
+		$c->remove(array('m_id','=',$_POST['delete']));
 		$t->remove(array('m_id','=',$_POST['delete']));
 		$m->remove(array('id','=',$_POST['delete']));
 		Session::flash('success','Milestone has been removed.');
 	}
 	else
-	{
-		$t->remove(array('m_id','=',$_POST['delete']));
+	{	
+		$c->remove(array('m_id','=',$_POST['delete']));
 		$m->remove(array('id','=',$_POST['delete']));
 		Session::flash('success','Milestone has been removed.');
+	}
+}
+if(isset($_POST['addComment']))
+{
+	$v->check($_POST, array(
+			'comment' => array(
+				'required'=> true
+			)
+	));
+	if($v->passed())
+	{
+		$c->add(array(
+			'comments' => Input::get('comment'),
+			'date'	   => $time->curdatetime(),
+			'm_id'  => Input::get('m_id'),
+			'user_id'  => Session::get('user_id')
+			
+		));
+		Redirect::to('edit.php?edit='.Input::get('m_id'));
 	}
 }

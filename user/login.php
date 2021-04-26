@@ -7,7 +7,7 @@ if(Input::exists())
     $user = $u->login(Input::get('email'), Input::get('password'));
     if($user)
     {
-      Redirect::to('index.php');
+      Redirect::to($config['path']['p1']);
     }
     else
     {
