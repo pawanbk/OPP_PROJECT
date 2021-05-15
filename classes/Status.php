@@ -28,7 +28,6 @@ class Status{
 			return true;
 		}
 		return false;
-
 	}
 	public function remove($where=array()){
 		return $this->_db->delete('status',$where);

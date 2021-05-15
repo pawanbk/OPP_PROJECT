@@ -1,4 +1,17 @@
 $(document).ready(function(){
+
+	if($('#start-time').length) {
+		$('#start-time').on('click', function(e){
+			data = {
+				'starTimer': 1,
+				'task_id': $(this).data('task-id'),
+			};
+			$.post('handle.php',data).done(function(data) {
+				location.reload();
+			});		
+		});
+	}
+
 	$('.type').change(function()
 		{
 			var value = $('option:selected', this).val();

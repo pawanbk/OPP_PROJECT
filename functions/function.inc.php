@@ -28,7 +28,8 @@
 	}
 	function base_url($string='')
 	{
-		return 'http://localhost/OOP_PROJECT/'.$string;
+		global $config;
+		return $config['base_url'].$string;
 	}
 	function currentdate()
 	{

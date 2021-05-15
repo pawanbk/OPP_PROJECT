@@ -245,8 +245,8 @@ if(isset($_GET['deleteStatus']))
 // set status of the task
 if(isset($_POST['status']))
 {
-	 $t->update($_POST['id'],array('status' =>$_POST['status']),'id');
-	 Session::flash('success','status of the task changed');
+	$t->update($_POST['id'],array('status' =>$_POST['status']));
+	Session::flash('success','status of the task changed');
 }
 
 // set type of the task
@@ -323,4 +323,23 @@ if(isset($_POST['addTimeLog']))
 		"hours" => Input::get('totalHours')
 	));
 	Redirect::to('edit.php?edit='.Input::get('task_id').'&&m_id='.Input::get('m_id'));
+}
+if(isset($_POST['starTimer'])) {
+	$task_id = $_POST['task_id'];
+	$task = new Task();
+	$task->getById($task_id);
+	$data = $task->data();
+	$startTime = time();
+	$timelog->add(array(
+		"task_id" => $task_id,
+		"assignee" => $data->assignee,
+		"start_datetime" => date('Y-m-d',$startTime).'T'. date('G:i',$startTime), // 2021-05-13T15:21
+		"end_datetime" => '',
+		"hours" => null
+	));
+
+	echo json_encode(array(
+		'success' => true,
+		'startTime' => $startTime
+	));
 }

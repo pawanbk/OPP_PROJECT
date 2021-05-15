@@ -32,7 +32,20 @@ class Task {
 			return true;
 		}
 		return false;
+	}
 
+	public function getById($id){
+		if (!$this->_db->get('task',array('id'=>$id)))
+		{
+			throw new Exception('there was an error');
+		}
+		else{
+			$data = $this->_db->get('task',array('id'=>$id));
+			$this->_data = $data->first();
+			$this->_count = $data->count();
+			return $this;
+		}
+		return false;
 	}
 	public function lastInserted($where=array())
 	{

@@ -6,9 +6,18 @@ $name ='';
 $description='';
 $due_date ='';
 $timer_start = false;
-if(isset($_POST['start']))
+if(isset($_GET['edit']))
 {
-	$timer_start = true;
+	$db = Db::getInstance();
+	$result = $db->get('timelog', array(
+		'task_id', '=', $_GET['edit'], 'AND', 'end_datetime', '=', '',
+	));
+	if ($result->count()) {
+		$timer_start = true;
+		$row = $result->first();
+		$date = strtotime($row->start_datetime);
+		$startedTime = $date;
+	}
 }
 
 if(isset($_GET['edit']))
@@ -72,8 +81,16 @@ $c->get(array('task_id','=',$task_id));
 					</button>
 		</div>
 		<?php }?>
+		<div class="row">
+			<div class="col-12"><h5 align="center">Time log<h5></div>
+			<div class="col-12"><h2 align="center" id="current-time">00:00:00<h2></div>
+			<div class="col-12"> <div class="row">
+				<div class="col-6"><a href="#" id="start-time" data-task-id="<?php echo $_GET['edit']; ?>" class="btn btn-success btn-block <?php echo $timer_start ? 'disabled' : '' ?>">Start Task</a></div>
+				<div class="col-6"><a href="#" id="end-time" class="btn btn-danger btn-block <?php echo $timer_start ? '' : 'disabled' ?>">End Task</a></div>
+			</div></div>
+		</div>
 		<div style="margin-top:30px">
-			<h5 align="center">Time log<h5>
+			<h5 align="center">Time logs<h5>
 		</div>
 		<?php 
 		$timelog->getData(array('task_id','=',$task_id));
@@ -255,4 +272,27 @@ $c->get(array('task_id','=',$task_id));
 	$(".btn-close").click(function(){
 		$(".log-modal").hide();
 	});
+	function secondsToHms(d) {
+	    d = Number(d);
+	    var h = Math.floor(d / 3600);
+	    var m = Math.floor(d % 3600 / 60);
+	    var s = Math.floor(d % 3600 % 60);
+	    return getWithZero(h) + ":" + getWithZero(m) + ":" + getWithZero(s); 
+	}
+	function getWithZero(n) {
+		return n < 9 ? "0"+n : n;
+	}
+	<?php if($timer_start) { ?>
+		var diff = 0;
+		$(document).ready(function(){
+			var startedTime = '<?php echo $startedTime; ?>';
+			var now = Math.floor(Date.now() / 1000);
+			diff = now - startedTime;
+			$('#current-time').html(secondsToHms(diff));
+		});
+		setInterval(function(){
+			diff += 1;
+			$('#current-time').html(secondsToHms(diff));
+		}, 1000);
+	<?php } ?>
 </script>

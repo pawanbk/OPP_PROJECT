@@ -100,6 +100,7 @@ $t->get(array('m_id','=',$id));
 				<select name='type' class="type form-select" data-task-id="<?php echo $data->id;?>">
 					<option style="font-weight: bold;" value='0' <?php if($data->type== 0) echo "selected"?>>select</option>
 					<?php 
+					// TODO: fix this
 					$a=1;
 					$ty->get();
 					if($ty->count()){
@@ -111,22 +112,24 @@ $t->get(array('m_id','=',$id));
 			</td>
 			<td>
 				<select name='status' class="status form-select" data-task-id="<?php echo $data->id;?>">
-					<option style="font-weight: bold;" value='0' <?php if($data->status== 0) echo "selected"?>>select</option>
-					<?php 
-					$a=1;
+					<option style="font-weight: bold;" value='0' <?php if ($data->status== 0) echo "selected"?>>select</option>
+					<?php
 					$status = new Status();
 					$status->get();
 					if($status->count()){
 						foreach($status->data() as $status){
 					?>
-						<option value='<?php echo $a?>' <?php if($data->status== $a) echo "selected"?>><?php echo $status->name?></option>
-					<?php $a++;}}?>
+						<option value="<?php echo $status->id; ?>" <?php if($data->status == $status->id) echo "selected"?>><?php echo $status->name?></option>
+					<?php }
+				} ?>
 				</select>
 			</td>
 			<td>
+
 				<select name='priority' class="priority form-select" data-task-id="<?php echo $data->id;?>">
 					<option style="font-weight: bold;" value='0' <?php if($data->priority== 0) echo "selected"?>>select</option>
 					<?php 
+					// TODO: fix this
 					$a=1;
 					$pr->get();
 					if($pr->count()){
