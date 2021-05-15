@@ -1,6 +1,6 @@
 <?php 
 class Task {
-	private $_data =array(),
+	private $_data,
 	        $_db,
 	        $_count,
 	        $_user;
@@ -79,7 +79,7 @@ class Task {
 		}
 		return false;
 	}
-	public function getAssigned_user($id){
+	public function getAssignee($id){
 		$where = array('id','=',$id);
 		if(!$this->_db->get('task',$where))
 		{
@@ -89,22 +89,22 @@ class Task {
 		{
 			$data = $this->_db->get('task',$where);
 			$this->_data = $data->first();
-			$user_id = $this->_data->asssigned_user;
-			if($user->find($user_id))
+			$user_id = $this->_data->assignee;
+			if($this->_user->find($user_id))
 			{
-				if($user->data())
+				if($this->_user->data())
 				{
-					$f_name = $user->data()->f_name;
-					$l_name = $user->data()->l_name;
+					$f_name = $this->_user->data()->f_name;
+					$l_name = $this->_user->data()->l_name;
 					$this->_data = $f_name.' '.$l_name;
 				}
 				
 			}
 			else
 				{
-					echo "no user";
+					$this->_data = "no user assigned";
 				}
-			return true;
+			return $this->_data;
 		}
 		return false;
 	}

@@ -19,7 +19,7 @@ if(isset($_POST['add']))
 		));
 		if($v->passed())
 		{
-			if($time->diffDate($date_format) == false)
+			if(diffDate($date_format) == false)
 			{
 				Session::flash('errors', 'Please select valid due date');
 				Redirect::to('view.php?proj_id='.$_POST['proj_id']);
@@ -91,7 +91,7 @@ if(isset($_POST['update']))
 		));
 		if($v->passed())
 		{
-			if($time->diffDate($date_format))
+			if(diffDate($date_format))
 			{
 				$m->update(Input::get('m_id'), array('name'=> Input::get('name'), 'due_date' => $date_format));
 				Session::flash('success','Milestone has been updated.');
@@ -116,30 +116,41 @@ if(isset($_POST['update']))
 
 	}
 }
+function delete_milestones($m_id)
+{
+	global  $m,
+			$ta,
+			$c,
+			$timelog,
+			$t;
 
-if(isset($_POST['delete']))
-{	
-	$t->get(array('m_id','=',$_POST['delete']));
+	$t->get(array('m_id','=',$m_id));
 	if($t->count())
 	{
 		foreach($t->data() as $data)
 		{
 			$task_id = $data->id;
-			$ut->remove(array('task_id','=',$task_id));
 			$ta->remove(array('task_id','=',$task_id));
 			$c->remove(array('task_id','=',$task_id));
+			$timelog->remove(array('task_id','=',$task_id));
 		}
-		$c->remove(array('m_id','=',$_POST['delete']));
-		$t->remove(array('m_id','=',$_POST['delete']));
-		$m->remove(array('id','=',$_POST['delete']));
-		Session::flash('success','Milestone has been removed.');
+		$c->remove(array('m_id','=',$m_id));
+		$t->remove(array('m_id','=',$m_id));
+		$m->remove(array('id','=',$m_id));
+		Session::flash('success','Deleted successfully !!!');
 	}
 	else
 	{	
-		$c->remove(array('m_id','=',$_POST['delete']));
-		$m->remove(array('id','=',$_POST['delete']));
-		Session::flash('success','Milestone has been removed.');
+		$c->remove(array('m_id','=',$m_id));
+		$m->remove(array('id','=',$m_id));
+		Session::flash('success','Deleted successfully !!!');
 	}
+
+}
+
+if(isset($_POST['delete']))
+{	
+	delete_milestones($_POST['delete']);
 }
 if(isset($_POST['addComment']))
 {
@@ -152,11 +163,18 @@ if(isset($_POST['addComment']))
 	{
 		$c->add(array(
 			'comments' => Input::get('comment'),
-			'date'	   => $time->curdatetime(),
+			'date'	   => curdatetime(),
 			'm_id'  => Input::get('m_id'),
 			'user_id'  => Session::get('user_id')
 			
 		));
-		Redirect::to('edit.php?edit='.Input::get('m_id'));
+		Redirect::to('edit.php?edit='.Input::get('m_id').'&&proj_id='.Input::get('proj_id'));
+	}
+}
+if(isset($_POST['checkbox'][0]))
+{
+	foreach($_POST['checkbox'] as $id)
+	{
+		delete_milestones($id);
 	}
 }

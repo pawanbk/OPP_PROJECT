@@ -1,45 +1,48 @@
 <?php
-class Comment{
+class Timelog{
 	private $_data,
 			$_db,
 			$_count,
 			$_user;
 
-	public function __construct(){
+	public function __construct()
+	{
 		$this->_db = Db::getInstance();
 		$this->_user = new User();
 	}
-	public function add($fields=array()){
-		return $this->_db->insert('comment', $fields);
+
+	public function add($fields=array())
+	{
+		return $this->_db->insert('timelog',$fields);
 	}
 
-	public function get($where=array()){
-		$string = "ORDER BY id DESC";
-		if (!$this->_db->get('comment',$where,$string))
+	public function getData($where=array())
+	{
+		if(!$this->_db->get('timelog',$where))
 		{
-			throw new Exception('there was an error');
+			throw new Exception("Error Processing Request", 1);
+			
 		}
-		else{
-			$data = $this->_db->get('comment',$where,$string);
+		else
+		{
+			$data = $this->_db->get('timelog',$where);
 			$this->_data = $data->results();
 			$this->_count = $data->count();
 			return true;
 		}
 		return false;
-
 	}
-	public function commentedBy($id)
-	{
-		$where = array('id','=',$id);
-		if(!$this->_db->get('comment',$where))
+	public function getAssignee($id){
+		$where = array('task_id','=',$id);
+		if(!$this->_db->get('timelog',$where))
 		{
 			throw new Exception('there was an error');
 		}
 		else
 		{
-			$data = $this->_db->get('comment',$where);
+			$data = $this->_db->get('timelog',$where);
 			$this->_data = $data->first();
-			$user_id = $this->_data->user_id;
+			$user_id = $this->_data->assignee;
 			if($this->_user->find($user_id))
 			{
 				if($this->_user->data())
@@ -52,15 +55,14 @@ class Comment{
 			}
 			else
 				{
-					echo "no user";
+					$this->_data = "no user assigned";
 				}
-			return true;
+			return $this->_data;
 		}
 		return false;
 	}
-	
-	public function remove($where= array()){
-		return $this->_db->delete('comment',$where);
+	public function remove($where=array()){
+		return $this->_db->delete('timelog',$where);
 	}
 	public function count(){
 		return $this->_count;
@@ -68,4 +70,4 @@ class Comment{
 	public function data(){
 		return $this->_data;
 	}
-	}
+}

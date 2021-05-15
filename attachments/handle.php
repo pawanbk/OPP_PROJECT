@@ -19,7 +19,7 @@ if(isset($_POST['attach']))
 			if(in_array($file_act_ext,$format))
 			{
 				$file_des = $path .'/'. $file_name;
-				$path_to_be_store = 'http://localhost/OOP_PROJECT/'.$file_des;
+				//$path_to_be_store = 'http://localhost/OOP_PROJECT/'.$file_des;
 				$move = move_uploaded_file($file_tmp, '../'.$file_des);
 				if(!$move)
 				{
@@ -27,7 +27,7 @@ if(isset($_POST['attach']))
 				}
 				else
 				{
-					$a->add(array('attachment' => $path_to_be_store,'uploaded_on'=>$time->currentdate()));
+					$a->add(array('attachment' => $file_des,'uploaded_on'=>currentdate()));
 					$a->lastInserted();
 					if($a->count())
 					{
@@ -42,7 +42,7 @@ if(isset($_POST['attach']))
 			}
 			else
 			{
-				Session::flash('error', 'select at least one file/choose only .jpg, .jpeg, .png, .pdf files');
+				Session::flash('error', 'select at least one file / choose only .jpg, .jpeg, .png, .pdf files');
 				Redirect::to('view.php?task_id='.Input::get('task_id'));
 			}
 		}
@@ -50,8 +50,15 @@ if(isset($_POST['attach']))
 	}
 }
 if(isset($_GET['delete']))
-{
+{	
 	$attach_id = $_GET['delete'];
+	$a->get(array('id','=',$attach_id));
+	$img = '';
+	foreach($a->data() as $data)
+	{
+		$img = $data->attachment;
+	}
+	unlink('../'.$img);
 	$ta->remove(array('attach_id','=',$attach_id));
 	$a->remove(array('id','=',$attach_id));
 	Redirect::to('view.php?task_id='.$_GET['task_id']);

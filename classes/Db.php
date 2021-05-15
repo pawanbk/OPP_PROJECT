@@ -4,11 +4,10 @@ class Db {
     public static $_instance = null;
 
     private $_conn, 
-    $_query,
-    $_results,
-    $_count=0,
-    $_error=false,
-    $_insertId;
+            $_query,
+            $_results,
+            $_count=0,
+            $_error=false;
 
     private function  __construct(){ 
         global $config;

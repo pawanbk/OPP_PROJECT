@@ -1,5 +1,6 @@
 <?php 
 return [
+	'base_url' => '',
 	'db' => [
 		'host' => 'localhost',
 		'user' => '',
@@ -9,9 +10,6 @@ return [
 	],
 	'app' => [
 		'name' => ''
-	],
-	'session' =>[
-		 'session_id' => ''
 	]
 
 ];

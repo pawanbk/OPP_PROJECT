@@ -2,12 +2,15 @@
   display:none;
   position: fixed;
   z-index: 1;
-  margin-top:70px; 
   left: 0;
   top: 0;
   width: 100%; 
   background-color: rgb(0,0,0); 
   background-color: rgba(0,0,0,0.4);
+}
+.modal .modal-body{
+  margin-top:1rem;
+
 }
 .modal .btn-group{
   display: flex;
@@ -15,13 +18,9 @@
   align-items: center;
 }
 .modal .btn-group a{
-  margin-right: 10px;
+  margin-right: 1rem;
+  color:white;
 }
-.modal .modal-footer p{
-  text-align:left;
-  color:red;
-}
-
 .addModal {
   display:none;
   position: fixed;
@@ -36,22 +35,38 @@
 }
 .addModal .modal-dialog
 {
-  margin-top: 10px;
+  margin-top: 1rem;
   height: auto;
 }
-.addModal .modal-dialog .modal-body
-{
-  margin-top:5px;
+.addModal .modal-header {
+  position:relative;
+  height:4rem !important;
 }
-.addModal .modal-dialog .modal-body span.close{
+.addModal .modal-header .btn-close {
+  position:absolute;
+  right:.6rem;
+}
+.log-modal{
+  display:none;
+  position: fixed;
+  z-index: 1;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height:100%;
+  background-color: rgb(0,0,0); 
+  background-color: rgba(0,0,0,0.4); 
+}
+span.btn-close{
+  color:black;
+  font-size:1rem;
+
+}
+span.btn-close:hover{
+  cursor: pointer;
   color:red;
-  margin-top:-50px;
-  font-size: 28px;
+}
+.warning {
+  color:red;
 }
 
-.close:hover,
-.close:focus {
-  color: #000;
-  text-decoration: none;
-  cursor: pointer;
-}

@@ -1,21 +1,23 @@
 <?php
 require_once '../core/init.php';
-include "{$config['path']['p3']}header.php"; 
+include "{$config['path']['p2']}header.php"; 
 $proj_id = $_GET['proj_id'];
 $m->get(array('proj_id','=', $proj_id));
 ?>
-<?php if (Session::exists('success'))
-				{
-					echo "<div class='alert alert-success'>"
-					.Session::flash('success').
-					"</div>";
-				}?>
 <div class="box">
+	<?php 
+		if (Session::exists('success'))
+		{
+			echo "<div class='alert alert-success'><p>"
+			.Session::flash('success').
+			"</p></div>";
+		}
+		?>
 	<div class='box-wrapper'>
 		<div class="form-box">
 			<form  method="post" action="handle.php">
 				<div class="form-title">
-					<h3>Create Milestone</h3>
+					<h5>Create Milestone</h5>
 				</div>
 				<?php if (Session::exists('errors'))
 					{
@@ -39,85 +41,75 @@ $m->get(array('proj_id','=', $proj_id));
 		</div>
 	</div>
 	<?php if($m->count()){?>
-		<div class="table-wrapper">
+		<div class="table-wrapper scrollable">
 			<div class="table-title">
-				<h3>Milestone List</h3>
+				<h5>Milestone List</h5>
 			</div>
-			<table class="table table-striped table-hover">
-				<thead>
-					<tr>
-					<th>#</th>
-					<th>Name</th>
-					<th>Due Date</th>
-					<th>Task</th>
-					<th>Status</th>
-					<th>Action</th>
-					</tr>
-				</thead>
+			<div class="div-right mbr-5">
+				<button class="btn btn-danger" onclick="delete_all()">Delete Records</button>
+			</div>
+			<form id="frm">
+				<table class="table">
+					<thead>
+						<tr>
+							<th><input type="checkbox" id="delete" onclick="select_all()"></th>
+							<th>ID</th>
+							<th>Name</th>
+							<th>Due Date</th>
+							<th>Task</th>
+							<th>Status</th>
+							<th>Progress Bar</th>
+							<th>Action</th>
+						</tr>
+					</thead>
 					<tbody>
-					<?php 
-					$x=1;
-					foreach($m->data() as $data)
-					{?>
-					<tr>
-						<td><?php echo $x?></td>
-						<td><?php echo $data->name;?></td>
-						<td><?php echo $data->due_date;?></td>
-						<td><a class="view btn btn-info btn-sm" href="../task/view.php?m_id=<?php echo $data->id?>">view</a></td>
-						<td>
 						<?php 
-						if($data->status == 1)
-						{
-						echo "<a style='color:white' class='btn btn-danger btn-sm' href='handle.php?type=status&operation=unset&id={$data->id}&proj_id={$proj_id}'>unset</a>";
-						}
-						else 
-						{
-						echo "<a style='color:white' class='btn btn-success btn-sm' href='handle.php?type=status&operation=set&id={$data->id}&proj_id={$proj_id}'>set</a>";
-						}
-						?>
-						</td>
-						<td>
-							<a href="edit.php?edit=<?php echo $data->id?>&proj_id=<?php echo $proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
-							<a data-delete-id='<?php echo $data->id?>' class="delete"><i class="material-icons" >&#xE872;</i></a>
-						</td>
-					</tr> 
-					<?php
-					$x++; }
-					?>	
-				</tbody>
-			</table>
+						$x=1;
+						foreach($m->data() as $data)
+						{?>
+						<tr>
+							<td><input type="checkbox" name = "checkbox[]" value="<?php echo $data->id;?>"></td>
+							<td><?php echo $data->id;?></td>
+							<td><?php echo $data->name;?></td>
+							<td><?php echo $data->due_date;?></td>
+							<td><a class="view btn btn-info btn-sm" href="<?php echo $config['base_url']?>task/view.php?m_id=<?php echo $data->id?>">view</a></td>
+							<td>
+							<?php 
+							if($data->status == 1)
+							{
+							echo "<a style='color:white' class='btn btn-danger btn-sm' href='handle.php?type=status&operation=unset&id={$data->id}&proj_id={$proj_id}'>unset</a>";
+							}
+							else 
+							{
+							echo "<a style='color:white' class='btn btn-success btn-sm' href='handle.php?type=status&operation=set&id={$data->id}&proj_id={$proj_id}'>set</a>";
+							}
+							?>
+							</td>
+							<td>
+								<div class="progress">
+									<div class="progress-bar" style="width:<?php echo $m->getProgress($data->id).'%';?>"><?php echo $m->getProgress($data->id).'%';?>	
+									</div>
+								</div>
+							</td>
+							<td class="toBeDisabled">
+								<a href="edit.php?edit=<?php echo $data->id?>&proj_id=<?php echo $proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
+								<a data-delete-id='<?php echo $data->id?>' class="delete"><i class="material-icons" >&#xE872;</i></a>
+							</td>
+						</tr> 
+						<?php
+						$x++; }
+						?>	
+					</tbody>
+				</table>
+			</form>
 		</div>
 	<?php }
-	else {?>
-		<div class="empty-div"> 
-			<div class="content">
-				<h3>No milestone available!!</h3>
-				<p>There are no Milestone available for this project at this moment. Once you create milestone, they will be available in this Section and you can set them according to the needs of project. Also, will be able to Edit, Delete and View task related to this project.</p>
-				<img src="../upload/milestone.jpg" width="400" height="200"><img src="../upload/image2.png" width="400" height="200">
-			</div>
-		</div>
-	<?php }?>
-	<div class="modal" id="Modal">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <div class="modal-body">
-	        <h4 align="center"> Are you sure you want to delete this Milestone?</h4>
-	        <div class="btn-group">
-		        <a id="yes" class="btn btn-info">Yes</a>
-		        <a href="" class='btn btn-danger'>No</a>
-	     	</div>
-	      </div>
-	      <div class='modal-footer'>
-	      	<p> Note: If you delete a Milestone, all tasks related to that milestone will be deleted automatically.</p>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+	else 
+	{
+		echo empty_div('Milestones','edit, delete and also view tasks');
+	}
+	?>
+	<?php echo delete_modal();?>
 </div>
 <script type="text/javascript">
 	$('.delete').click(function(){
@@ -129,8 +121,45 @@ $m->get(array('proj_id','=', $proj_id));
 				location.reload();
 			})
 		})
-		$('.close').click(function(){
+		$('.btn-close').click(function(){
 			$('#Modal').hide();
 		})
 	});
+	function select_all()
+	{
+		if($('#delete').prop('checked'))
+		{
+			$('input[type=checkbox]').each(function(){
+				$(this).prop('checked',true);
+			});
+			
+		}
+		else
+		{
+			$('input[type=checkbox]').each(function(){
+				$(this).prop('checked',false);
+			})
+			
+		}
+		
+		
+	}
+	$("input[type='checkbox']").click(function(){
+			if($(this).is(':checked'))
+			{
+				$('.div-right').show();
+				$('.toBeDisabled').addClass('disabled-td');
+			}
+			else if($(this).is(':unchecked'))
+			{
+				$('.div-right').hide();
+				$('.toBeDisabled').removeClass('disabled-td')
+			}
+		});
+	function delete_all(){
+		$.post('handle.php',$('#frm').serialize())
+		.done(function(){
+			location.reload();
+		})
+	}
 </script>

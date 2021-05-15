@@ -7,7 +7,17 @@ if(Input::exists())
     $user = $u->login(Input::get('email'), Input::get('password'));
     if($user)
     {
-      Redirect::to($config['path']['p1']);
+      if(Input::get('rememberme'))
+      {
+        Cookie::put('emailCookie',Input::get('email'));
+        Cookie::put('passwordCookie',Input::get('password'));
+        Redirect::to($config['base_url'].'index.php');
+      }
+      else
+      {
+        Redirect::to($config['base_url'].'index.php'); 
+      }
+      
     }
     else
     {
@@ -16,12 +26,13 @@ if(Input::exists())
   }
   else
   {
-      Session::put('errors','All fields are required.');
+      foreach($validation->getError() as $error)
+      Session::put('errors',$error);
   }
 } 
 ?>
    
-<div class='conatiner'>
+<div class='box'>
   <div class="wrapper">
     <form method="post">
       <h3 align="center">Login</h3>
@@ -33,20 +44,22 @@ if(Input::exists())
           }?>
       <div class="form-group">
         <label >Email</label>
-        <input name="email" value = "<?php echo(Input::get('email'));?>" type="text" class="form-control"> 
+        <input name="email" value = "<?php if(Cookie::exists('emailCookie')){echo Cookie::get('emailCookie');}?>" type="text" class="form-control"> 
       </div>
 
       <div class="form-group">
         <label>Password</label>
-        <input name="password" type="password" class="form-control" id="exampleInputPassword1">
+        <input name="password" type="password" class="form-control" value="<?php if(Cookie::exists('passwordCookie')){echo Cookie::get('passwordCookie');}?>">
       </div>
-
+      <div class="form-group">
+        <input name="rememberme" type="checkbox"> <strong> Remember me</strong>
+      </div>
       <div class="form-group">
         <button type="submit" class="form-control btn btn-info">Login</button>
       </div>   
     </form>
     <div class='links'>
-      <strong> New Here? <a href="../user/register.php">Register</a></strong>
+      <strong> New Here? <a href="<?php echo base_url('user/register.php')?>">Register</a></strong>
     </div> 
   </div>
 </div>

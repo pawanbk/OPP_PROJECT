@@ -21,7 +21,7 @@ if(isset($_POST['add']))
 		{	
 
 			$date_formated = date('Y-m-d', strtotime(Input::get('due_date')));
-			if($time->diffDate($date_formated)==true)
+			if(diffDate($date_formated)==true)
 			{
 				 $p->addProject(
 	    		array(
@@ -30,12 +30,12 @@ if(isset($_POST['add']))
 	    			'due_date' => $date_formated
 	    		));
 	         Session::flash('success', 'Project has been created.');
-	         Redirect::to($config['path']['p1']);
+	         Redirect::to($config['base_url'].'index.php') ;
 			}
 			else
 			{
-				Session::flash('errors', 'Select valid due date.');
-	        	Redirect::to($config['path']['p1']);
+				Session::flash('errors', 'Please select valid due date.');
+	        	Redirect::to($config['base_url'].'index.php');
 			}
 	       
 		}
@@ -44,16 +44,23 @@ if(isset($_POST['add']))
 			foreach($validation->getError() as $err)
 			{
 				Session::put('errors',$err);
-				Redirect::to($config['path']['p1']);
+				Redirect::to($config['base_url'].'index.php');
 			}
 			
 		}
 	}
 }
 
-if (isset($_POST['delete']))
+function delete_project($proj_id)
 {
-	$m->get(array('proj_id','=',$_POST['delete']));
+	global  $m,
+			$t,
+			$ta,
+			$c,
+			$timelog,
+			$p;
+
+	$m->get(array('proj_id','=',$proj_id));
 	if($m->count())
 	{
 		foreach($m->data() as $data)
@@ -65,22 +72,22 @@ if (isset($_POST['delete']))
 				foreach($t->data() as $d)
 				{
 					$task_id = $d->id;
-					$ut->remove(array('task_id','=',$task_id));
 					$ta->remove(array('task_id','=',$task_id));
 					$c->remove(array('task_id','=',$task_id));
+					$timelog->remove(array('task_id','=',$task_id));
 				}
 				$c->remove(array('m_id','=',$m_id));
 				$t->remove(array('m_id','=',$m_id));
-			    $m->remove(array('proj_id','=',$_POST['delete']));
-			    $p->remove(array('proj_id','=',$_POST['delete']));
-				Session::flash('success','Project has been removed.');
+			    $m->remove(array('proj_id','=',$proj_id));
+			    $p->remove(array('proj_id','=',$proj_id));
+				Session::flash('success','Deleted successfully !!!');
 			}
 			else
 			{	
 				$c->remove(array('m_id','=',$m_id));
-			    $m->remove(array('proj_id','=',$_POST['delete']));
-			    $p->remove(array('proj_id','=',$_POST['delete']));
-				Session::flash('success','Project has been removed.');
+			    $m->remove(array('proj_id','=',$proj_id));
+			    $p->remove(array('proj_id','=',$proj_id));
+				Session::flash('success','Deleted successfully !!!');
 				
 			}
 		}
@@ -89,9 +96,14 @@ if (isset($_POST['delete']))
 	
 	else
 	{
-		$p->remove(array('proj_id','=',$_POST['delete']));
-		Session::flash('success','Project has been removed.');
+		$p->remove(array('proj_id','=',$proj_id));
+		Session::flash('success','Deleted successfully !!!');
 	}
+}
+
+if (isset($_POST['delete']))
+{
+	delete_project($_POST['delete']);
 }
 
 if(isset($_POST['update']))
@@ -115,7 +127,7 @@ if(isset($_POST['update']))
 	    			'due_date' => Input::get('due_date')
 	    		));
 	         Session::flash('success', 'Project has been updated.');
-	         Redirect::to($config['path']['p1']);
+	         Redirect::to($config['base_url'].'index.php');
 		}
 		else
 		{
@@ -129,4 +141,11 @@ if(isset($_POST['update']))
 	}
 }
 
+if(isset($_POST['checkbox'][0]))
+{
+	foreach($_POST['checkbox'] as $id)
+	{
+		delete_project($id);
+	}
+}
 ?>

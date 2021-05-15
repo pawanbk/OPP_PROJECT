@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Apr 25, 2021 at 08:42 AM
+-- Generation Time: May 15, 2021 at 02:24 PM
 -- Server version: 10.4.18-MariaDB
 -- PHP Version: 8.0.3
 
@@ -33,6 +33,16 @@ CREATE TABLE `attachment` (
   `uploaded_on` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `attachment`
+--
+
+INSERT INTO `attachment` (`id`, `attachment`, `uploaded_on`) VALUES
+(65, 'upload/logo.PNG', '2021-05-13'),
+(66, 'upload/companylogo.JPG', '2021-05-13'),
+(67, 'upload/Capture.JPG', '2021-05-14');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `comment`
@@ -45,9 +55,16 @@ CREATE TABLE `comment` (
   `task_id` int(100) DEFAULT NULL,
   `user_id` int(100) DEFAULT NULL,
   `likes` int(255) DEFAULT NULL,
-  `dislikes` int(255) DEFAULT NULL
+  `dislikes` int(255) DEFAULT NULL,
+  `m_id` int(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `comment`
+--
+
+INSERT INTO `comment` (`id`, `comments`, `date`, `task_id`, `user_id`, `likes`, `dislikes`, `m_id`) VALUES
+(59, 'Hello this is the test comment', '2021-05-15 14:11:01', 25, 12, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -61,9 +78,18 @@ CREATE TABLE `milestone` (
   `user_id` int(100) DEFAULT NULL,
   `due_date` date DEFAULT NULL,
   `status` int(10) NOT NULL,
-  `proj_id` int(100) DEFAULT NULL
+  `proj_id` int(100) DEFAULT NULL,
+  `progress` int(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `milestone`
+--
+
+INSERT INTO `milestone` (`id`, `name`, `user_id`, `due_date`, `status`, `proj_id`, `progress`) VALUES
+(179, 'starting', 12, '2021-05-14', 0, 155, NULL);
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `project`
@@ -76,6 +102,16 @@ CREATE TABLE `project` (
   `due_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `project`
+--
+
+INSERT INTO `project` (`proj_id`, `proj_name`, `user_id`, `due_date`) VALUES
+(46, 'Opp project', 9, '0000-00-00'),
+(47, 'lavarel', 10, '0000-00-00'),
+(155, 'Opp project', 12, '2021-05-14');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `status`
@@ -98,13 +134,23 @@ CREATE TABLE `task` (
   `due_date` date DEFAULT NULL,
   `description` text DEFAULT NULL,
   `attachments` varchar(1000) DEFAULT NULL,
-  `type` varchar(30) NOT NULL,
+  `type` int(30) NOT NULL,
   `status` int(50) DEFAULT NULL,
+  `priority` int(50) NOT NULL,
   `m_id` int(100) DEFAULT NULL,
   `created_by` int(100) DEFAULT NULL,
-  `status_id` int(50) DEFAULT NULL
+  `assignee` int(100) DEFAULT NULL,
+  `mark` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `task`
+--
+
+INSERT INTO `task` (`id`, `name`, `due_date`, `description`, `attachments`, `type`, `status`, `priority`, `m_id`, `created_by`, `assignee`, `mark`) VALUES
+(25, 'To do', '2021-05-28', '', NULL, 0, 0, 0, 179, 12, 12, '');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `task_attachment`
@@ -112,7 +158,54 @@ CREATE TABLE `task` (
 
 CREATE TABLE `task_attachment` (
   `attach_id` int(100) DEFAULT NULL,
-  `task_id` int(100) DEFAULT NULL
+  `task_id` int(100) DEFAULT NULL,
+  `assignee` int(100) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `task_priority`
+--
+
+CREATE TABLE `task_priority` (
+  `id` int(100) NOT NULL,
+  `name` varchar(20) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `timelog`
+--
+
+CREATE TABLE `timelog` (
+  `id` int(100) NOT NULL,
+  `task_id` int(100) DEFAULT NULL,
+  `assignee` int(100) DEFAULT NULL,
+  `start_datetime` text DEFAULT NULL,
+  `end_datetime` text DEFAULT NULL,
+  `hours` float DEFAULT NULL,
+  `hourly_rate` float DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Dumping data for table `timelog`
+--
+
+INSERT INTO `timelog` (`id`, `task_id`, `assignee`, `start_datetime`, `end_datetime`, `hours`, `hourly_rate`) VALUES
+(12, 25, 12, '2021-05-13T15:21', '2021-05-13T17:21', 2, NULL),
+(13, 25, 12, '2021-05-15T18:56', '2021-05-15T19:56', 1, NULL);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `type`
+--
+
+CREATE TABLE `type` (
+  `id` int(100) NOT NULL,
+  `name` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 -- --------------------------------------------------------
@@ -126,14 +219,24 @@ CREATE TABLE `users` (
   `f_name` varchar(20) NOT NULL,
   `l_name` varchar(20) NOT NULL,
   `email` varchar(100) NOT NULL,
-  `salt` varchar(255) NOT NULL,
-  `Date` date NOT NULL,
+  `date` date NOT NULL,
   `user_pass` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `users`
 --
+
+INSERT INTO `users` (`user_id`, `f_name`, `l_name`, `email`, `date`, `user_pass`) VALUES
+(10, 'Nirmal', 'shrestha', 'nirmalstha999@gmail.com', '2021-04-12', 'b5791973a1356d246fdd39bea998d83995fba88694a7a45b19cc057831892952'),
+(12, 'pawan', 'bk', 'shiwanbk@gmail.com', '2021-04-12', 'b5791973a1356d246fdd39bea998d83995fba88694a7a45b19cc057831892952'),
+(13, 'Nirmal', 'shrestha', 'nirmal1234', '2021-04-12', 'b5791973a1356d246fdd39bea998d83995fba88694a7a45b19cc057831892952'),
+(14, 'Nirmal', 'shrestha', '123hjaskasja', '2021-04-26', 'b5791973a1356d246fdd39bea998d83995fba88694a7a45b19cc057831892952'),
+(15, 'Anwesa', 'Budha', 'anwesa1233', '2021-04-26', 'b5791973a1356d246fdd39bea998d83995fba88694a7a45b19cc057831892952'),
+(16, 'pawan', 'bk', 'pawan@gmail.com', '2021-04-29', '56306b8942ed57de8ec82347dcc91147f78a5be8a0fb32cee274549c301038e7'),
+(18, 'sangita', 'bk', 'sangita@gmail.com', '2021-05-01', 'cc1ebadf27b0a9bd4b38dea3988bc8c99368e0add8c77fd3e40e799fc40bddc9');
+
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `user_task`
@@ -144,6 +247,12 @@ CREATE TABLE `user_task` (
   `user_id` int(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+--
+-- Dumping data for table `user_task`
+--
+
+INSERT INTO `user_task` (`task_id`, `user_id`) VALUES
+(865, 12);
 
 --
 -- Indexes for dumped tables
@@ -161,7 +270,8 @@ ALTER TABLE `attachment`
 ALTER TABLE `comment`
   ADD PRIMARY KEY (`id`),
   ADD KEY `task_id` (`task_id`),
-  ADD KEY `user_id` (`user_id`);
+  ADD KEY `user_id` (`user_id`),
+  ADD KEY `m_id` (`m_id`);
 
 --
 -- Indexes for table `milestone`
@@ -191,14 +301,35 @@ ALTER TABLE `task`
   ADD PRIMARY KEY (`id`),
   ADD KEY `m_id` (`m_id`),
   ADD KEY `created_by` (`created_by`),
-  ADD KEY `status_id` (`status_id`);
+  ADD KEY `assignee` (`assignee`);
 
 --
 -- Indexes for table `task_attachment`
 --
 ALTER TABLE `task_attachment`
   ADD KEY `attach_id` (`attach_id`),
-  ADD KEY `task_id` (`task_id`);
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `assignee` (`assignee`);
+
+--
+-- Indexes for table `task_priority`
+--
+ALTER TABLE `task_priority`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `timelog`
+--
+ALTER TABLE `timelog`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `task_id` (`task_id`),
+  ADD KEY `assignee` (`assignee`);
+
+--
+-- Indexes for table `type`
+--
+ALTER TABLE `type`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indexes for table `users`
@@ -221,43 +352,61 @@ ALTER TABLE `user_task`
 -- AUTO_INCREMENT for table `attachment`
 --
 ALTER TABLE `attachment`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=45;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=68;
 
 --
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=60;
 
 --
 -- AUTO_INCREMENT for table `milestone`
 --
 ALTER TABLE `milestone`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=106;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=181;
 
 --
 -- AUTO_INCREMENT for table `project`
 --
 ALTER TABLE `project`
-  MODIFY `proj_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=73;
+  MODIFY `proj_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=161;
 
 --
 -- AUTO_INCREMENT for table `status`
 --
 ALTER TABLE `status`
-  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=25;
 
 --
 -- AUTO_INCREMENT for table `task`
 --
 ALTER TABLE `task`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=859;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+
+--
+-- AUTO_INCREMENT for table `task_priority`
+--
+ALTER TABLE `task_priority`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT for table `timelog`
+--
+ALTER TABLE `timelog`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
+-- AUTO_INCREMENT for table `type`
+--
+ALTER TABLE `type`
+  MODIFY `id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `user_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `user_id` int(100) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=19;
 
 --
 -- Constraints for dumped tables
@@ -268,7 +417,8 @@ ALTER TABLE `users`
 --
 ALTER TABLE `comment`
   ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
-  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
+  ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`),
+  ADD CONSTRAINT `comment_ibfk_3` FOREIGN KEY (`m_id`) REFERENCES `milestone` (`id`);
 
 --
 -- Constraints for table `milestone`
@@ -289,14 +439,22 @@ ALTER TABLE `project`
 ALTER TABLE `task`
   ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`m_id`) REFERENCES `milestone` (`id`),
   ADD CONSTRAINT `task_ibfk_2` FOREIGN KEY (`created_by`) REFERENCES `users` (`user_id`),
-  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`status_id`) REFERENCES `status` (`id`);
+  ADD CONSTRAINT `task_ibfk_3` FOREIGN KEY (`assignee`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `task_attachment`
 --
 ALTER TABLE `task_attachment`
   ADD CONSTRAINT `task_attachment_ibfk_1` FOREIGN KEY (`attach_id`) REFERENCES `attachment` (`id`),
-  ADD CONSTRAINT `task_attachment_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`);
+  ADD CONSTRAINT `task_attachment_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
+  ADD CONSTRAINT `task_attachment_ibfk_3` FOREIGN KEY (`assignee`) REFERENCES `users` (`user_id`);
+
+--
+-- Constraints for table `timelog`
+--
+ALTER TABLE `timelog`
+  ADD CONSTRAINT `timelog_ibfk_1` FOREIGN KEY (`task_id`) REFERENCES `task` (`id`),
+  ADD CONSTRAINT `timelog_ibfk_2` FOREIGN KEY (`assignee`) REFERENCES `users` (`user_id`);
 
 --
 -- Constraints for table `user_task`

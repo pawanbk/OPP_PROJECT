@@ -1,6 +1,6 @@
 <?php 
 require_once '../core/init.php';
-include "{$config['path']['p3']}header.php"; 
+include "{$config['path']['p2']}header.php"; 
 $update   = false;
 $name     = '';
 $due_date = '';
@@ -20,7 +20,7 @@ if(isset($_GET['edit']))
 $c->get(array('m_id','=',$_GET['edit']));
 ?>
 <div class='box'>
-	<div class='box-wrapper'>
+	<div style="width:50%" class='box-wrapper'>
 		<div class='form-box'>
 			<form method="post" action="handle.php">
 				<div class='form-title'>
@@ -40,53 +40,36 @@ $c->get(array('m_id','=',$_GET['edit']));
 			</form>
 		</div>
 	</div>
-	<?php if($c->count()){?>
-		<div class='table-wrapper'>
-			<div class="container">
-			    <div class="row">
-			        <div class="col-md-8">
-			            <div class="page-header">
-			                <h1><small class="pull-right"><?php echo $c->count()?> comments</small> Comments </h1>
-			            </div>
-			            <div class='form'> 
-				            <form method='post' action='handle.php'>
-				                <div class="form-group">
-				                    <textarea name='comment' class="form-control mr-3" rows='2' placeholder="leave a comment.."></textarea>
-				                    <input type="hidden" name='m_id' value="<?php echo $id?>">
-				                    <button class="btn btn-info" name='addComment' type="submit">Comment</button>
-				                </div>
-				            </form>
-				        </div>
-			            <?php foreach($c->data() as $data){?>
-				            <div class="comments-list">
-				                <div class="media">
-				                    <p class="pull-right"><small><?php echo $time->getDateTimeDiff($data->date);?></small></p>
-				                    <div class="media-body">
-				                        <h4 class="media-heading user_name"><?php if($c->commentedBy($data->id)){
-											 echo ucfirst($c->data());}?></h4>
-				                        <?php echo $data->comments?>
-				                        <p><small><a href="">Like</a> - <a href="">Share</a></small></p>
-				                    </div>
-				                </div>
-				            </div>
-			        	<?php }?>
-			        </div>
-			    </div>
-			</div>
+	<section class='comment'>
+		<div class="title">
+			<h5>Comments ( <?php echo $c->count()?> )</h5> 
 		</div>
-	<?php }else{?>
-		<div class="empty-div"> 
-			<div class="content">
-				<h3>No comments!!</h3>
-				<p>There are no Milestone available for this project at this moment. Once you create milestone, they will be available in this Section and you can set them according to the needs of project. Also, will be able to Edit, Delete and View task related to this project.</p>
+		<div class="content">
+			<div class="form">
 				<form method='post' action='handle.php'>
 	                <div class="form-group">
+	                	<label>write a comment</label>
 	                    <textarea name='comment' class="form-control mr-3" rows='2' placeholder="leave a comment.."></textarea>
-	                    <input type="hidden"  name='m_id' value="<?php echo $id?>">
+	                    <input type="hidden" name='m_id' value="<?php echo $id?>">
+	                    <input type="hidden" name='proj_id' value="<?php echo $_GET['proj_id']?>">
 	                    <button class="btn btn-info" name='addComment' type="submit">Comment</button>
 	                </div>
 	            </form>
 			</div>
+			<?php foreach ($c->data() as $data){?>
+				<div class="comment-list">
+					<div class="comment-head">
+						<h5 class="user_name text text-info">
+							<?php if($c->commentedBy($data->id)){
+							 echo ucfirst($c->data());}?>
+						</h5>
+						 <span class="time"><span class="dot"></span><?php echo getDateTimeDiff($data->date);?></span>
+					</div>
+					<div class="comment-body">
+						<p><?php echo $data->comments?></p>
+					</div>
+				</div>
+			<?php }?>
 		</div>
-	<?php } ?>
+	 </section>
 </div>

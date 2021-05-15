@@ -1,5 +1,5 @@
 <?php
-class Status{
+class Type{
 	private $_data,
 	        $_db,
 	        $_count;
@@ -9,20 +9,20 @@ class Status{
 
 	}
 	public function add($fields=array()){
-		return $this->_db->insert('status', $fields);
+		return $this->_db->insert('type', $fields);
 
 	}
 	public function update($id,$fields=array()){
-		return $this->_db->update('status',$id,$fields,'id');
+		return $this->_db->update('type',$id,$fields,'id');
 	}
 
 	public function get($where=array()){
-		if (!$this->_db->get('status',$where))
+		if (!$this->_db->get('type',$where))
 		{
 			throw new Exception('there was an error');
 		}
 		else{
-			$data = $this->_db->get('status',$where);
+			$data = $this->_db->get('type',$where);
 			$this->_data = $data->results();
 			$this->_count = $data->count();
 			return true;
@@ -31,7 +31,7 @@ class Status{
 
 	}
 	public function remove($where=array()){
-		return $this->_db->delete('status',$where);
+		return $this->_db->delete('type',$where);
 	}
 	public function data(){
 		return $this->_data;

@@ -1,11 +1,13 @@
 <?php 
 class Project {
-	private $_data =array(),
+	private $_data,
 	        $_db,
-	        $_count;
+	        $_count,
+	        $_milestone;
 
 	public function __construct(){
 		$this->_db = Db::getInstance();
+		$this->_milestone = new Milestone();
 
 	}
 
@@ -13,8 +15,8 @@ class Project {
 		$this->_db->insert('project',$fields);
 		return true;
 	}
-	public function getProjectByUser($fields=array()){
-		$data = $this->_db->get('project',$fields);
+	public function getProjectByUser($fields=array(),$string=''){
+		$data = $this->_db->get('project',$fields, $string);
 		$this->_data = $data->results();
 		$this->_count = $data->count();
 	}
@@ -31,6 +33,24 @@ class Project {
 		}
 		return false;
 
+	}
+	public function getProgress($id){
+		$this->_milestone->get(array('proj_id','=',$id));
+		$total_count = $this->_milestone->count();
+		if($this->_milestone->count())
+		{
+			$avg =0;
+			foreach($this->_milestone->data() as $data)
+			{
+				$percent = $this->_milestone->getProgress($data->id);
+				$avg += ($percent/$total_count);
+			}
+		}
+		else
+		{
+			$avg =0;
+		}
+		return $avg;
 	}
 	public function remove($where=array()){
     	return $this->_db->delete('project',$where);

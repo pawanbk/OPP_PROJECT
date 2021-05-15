@@ -1,6 +1,28 @@
 <?php
 $id = Session::get('user_id');
 $p->getProjectByUser(array('user_id','=',$id));
+$record = $p->count();
+$per_page = 5;
+$pagi = ceil($record/$per_page);
+$page =0;
+$current_page = 1;
+if(isset($_GET['page']))
+{
+	$page = $_GET['page'];
+	if($page<=0)
+	{
+		$page = 0;
+		$current_page=1;
+	}
+	else
+	{
+		$current_page = $page;
+		$page--;
+		$page = $page*$per_page;	
+	}
+
+}
+$p->getProjectByUser(array('user_id','=',$id),"order by proj_id DESC limit $page, $per_page");
 $update = false;
 $proj_id   = '';
 $proj_name = '';
@@ -27,22 +49,23 @@ if(isset($_GET['edit']))
 	}	
 }
 ?>
-<?php if (Session::exists('success'))
-				{
-					echo "<div class='msg-flash alert alert-success'><p>"
-					.Session::flash('success').
-					"</p></div>";
-				}?>
-
 <div class="box">
+	<?php 
+		if (Session::exists('success'))
+		{
+			echo "<div class='alert alert-success'><p>"
+			.Session::flash('success').
+			"</p></div>";
+		}
+		?>
 	<div class='box-wrapper'>
 		<div class="form-box">
-			<form  method="post" action='../project/handle.php'>
+			<form  method="post" action='project/handle.php'>
 				<div class="form-title">
 					<?php if($update == true):?>
-						<h3>Update Project</h3>
+						<h5>Update Project</h5>
 					<?php else:?>
-						<h3>Add Project</h3>
+						<h5><span>Add</span> Project</h5>
 					<?php endif?>
 				</div>
 				<?php if (Session::exists('errors'))
@@ -65,94 +88,141 @@ if(isset($_GET['edit']))
 						<button type="submit" name='add' class="btn btn-info">ADD</button>
 					<?php else:?>
 						<input type="hidden" name='id' value="<?php echo $proj_id?>">
-						<button type="submit" name='update' class="btn btn-primary">Update</button>
+						<button type="submit" name='update' class="btn btn-primary">UPDATE</button>
 					<?php endif;?>
 				</div>
 		     </form>
  		</div>
 	</div>
 
-	<?php if($p->count()){?>
+	<?php if($record>0){?>
 	<div class="table-wrapper">
 		<div class="table-title">
-			<h3>Manage Projects</h3>
+			<h5>Manage <span>Projects</span></h5>
 		</div>
-		<table class="table table-striped table-hover">
-			<thead>
-				<tr>
-					<th>#</th>
-					<th>Project Name</th>
-					<th>Budget</th>
-					<th>Milestone</th>
-					<th>Action</th>
-				</tr>
-			</thead>
-			<tbody>
-		<?php 
-			$x=1;
-			foreach($p->data() as $data)
-			{?>
-				<tr>
-					<td><?php echo $x?></td>
-					<td><?php echo $data->proj_name;?></td>
-					<td><?php echo $data->due_date;?></td>
-					<td><a class="view btn btn-info btn-sm" href="../milestone/view.php?proj_id=<?php echo $data->proj_id?>">view</a></td>
-					<td>
-					<a href="?edit=<?php echo $data->proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
-					<a class="delete" data-id="<?php echo $data->proj_id;?>"><i class="material-icons" title="Delete">&#xE872;</i></a>
-					</td>
-				</tr> 
-				
-			<?php
-			$x++; }
-			?>	
-			</tbody>
-		</table>
+		<form id="frm">
+			<div class="div-right mbr-5">
+				<button class="btn btn-danger" onclick="delete_all()">Delete Records</button>
+			</div>
+			<table class="table">
+				<thead>
+					<tr>
+						<th><input type="checkbox" id="delete" onclick="select_all()"></th>
+						<th>ID</th>
+						<th>Project Name</th>
+						<th>Due date</th>
+						<th>Milestone</th>
+						<th>Average progress</th>
+						<th>Action</th>
+					</tr>
+				</thead>
+				<tbody>
+			<?php 
+			if($p->count()){
+				foreach($p->data() as $data)
+				{?>
+					<tr>
+						<td><input type="checkbox" name = "checkbox[]" value="<?php echo $data->proj_id;?>"></td>
+						<td><?php echo $data->proj_id;?></td>
+						<td><?php echo ucfirst($data->proj_name);?></td>
+						<td><?php echo $data->due_date;?></td>
+						<td><a class="view btn btn-info btn-sm" href="milestone/view.php?proj_id=<?php echo $data->proj_id?>">view</a></td>
+						<td>
+							<div class="progress">
+								<div class="progress-bar progress-bar-striped" style="width:<?php echo $p->getProgress($data->proj_id).'%';?>"><?php echo round($p->getProgress($data->proj_id),2).'%';?></div>
+							</div>
+						</td>
+						<td class="toBeDisabled">
+							<a href="?edit=<?php echo $data->proj_id?>" class="edit"><i class="material-icons">&#xE254;</i></a>
+							<a class="delete" data-id="<?php echo $data->proj_id;?>"><i class="material-icons" title="Delete">&#xE872;</i></a>
+						</td>
+					</tr> 
+					
+				<?php
+				 }
+				}
+				else
+				{
+					echo "<td><h4>No records found!!!!</h4></td>";
+				}
+				?>	
+				</tbody>
+			</table>
+		</form>
+		<?php if($pagi > 1){?>
+		<div class="pagination-div">
+			<nav class="mt-10">
+				<ul class="pagination">
+					<?php 
+						for($i=1;$i<=$pagi;$i++){
+							$class='';
+							if($current_page == $i)
+							{
+								$class = 'active';
+							}
+					?>
+						<li class="page-item <?php echo $class?>"><a class="page-link" href="?page=<?php echo $i?>"><?php echo $i?></a></li>
+					<?php }?>
+				</ul>
+			</nav>
+		</div>
+	<?php } ?>
 	</div>
 	<?php }
-	else {?>
-		<div class="empty-div"> 
-			<div class="content">
-				<h3>No Projects available!!</h3>
-				<p>There are no projects available at this moment. Once you create Project, they will be available in this section and you can create and set Milestone according to the needs of each project. Also, will be able to Edit, Delete projects.</p>
-			</div>
-		</div>
-	<?php }?>
-
-	<div class="modal" id="Modal">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close">
-	          <span aria-hidden="true">&times;</span>
-	        </button>
-	      </div>
-	      <div class="modal-body">
-	        <h4 align="center"> Are you sure you want to delete this project?</h4>
-	        <div class="btn-group">
-		        <a id="yes" class="btn btn-info">Yes</a>
-		        <a href="" class='btn btn-danger'>No</a>
-	     	</div>
-	      </div>
-	      <div class='modal-footer'>
-	      	<p> Note: If you delete a project, all the milestones and task related to that project will be deleted automatically.</p>
-	      </div>
-	    </div>
-	  </div>
-	</div>
+	else 
+	{
+		echo empty_div('Projects','edit, delete and also view milestones');
+	}
+	?>
+	<?php echo delete_modal();?>
 </div>
 <script type="text/javascript">
 	$('.delete').click(function(){
 		var id = $(this).data('id');
 		$('#Modal').show();
 		$('#yes').click(function(){
-			$.post('../project/handle.php',{delete:id})
+			$.post('project/handle.php',{delete:id})
 			.done(function(){
 				location.reload();
 			})
 		})
 	});
-	$('.close').click(function(){
+	$('.btn-close').click(function(){
 		$('#Modal').hide();
 	});
+	function select_all()
+	{
+		if($('#delete').prop('checked'))
+		{
+			$('input[type=checkbox]').each(function(){
+				$(this).prop('checked',true);
+			});
+			
+		}
+		else
+		{
+			$('input[type=checkbox]').each(function(){
+				$(this).prop('checked',false);
+			})
+			
+		}
+		
+		
+	}
+	$("input[type='checkbox']").click(function(){
+			if($(this).is(':checked'))
+			{
+				$('.div-right').show();
+				$('.toBeDisabled').addClass('disabled-td');
+			}
+			else if($(this).is(':unchecked'))
+			{
+				$('.div-right').hide();
+				$('.toBeDisabled').removeClass('disabled-td')
+			}
+		});
+	function delete_all(){
+		$.post('project/handle.php',$('#frm').serialize());
+	}
+	
 </script>

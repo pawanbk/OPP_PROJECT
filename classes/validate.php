@@ -16,7 +16,7 @@ class Validate {
 
 				$value = trim($source[$item]);
 				if($rule == 'required' && empty($value)){
-					$this->addError("{$item} is required ");
+					$this->addError("All * fields fields are required to be filled.");
 				}
 				else if(!empty($value)){
 					switch($rule){
@@ -36,6 +36,23 @@ class Validate {
 						if($value != $source[$rule_value])
 						{
 							$this->addError("{$item} must match {$rule_value}");
+						}
+						break;
+						case 'contain':
+						if($rule == 'contain')
+						{
+							if(!preg_match('#[0-9]+#',$value))
+							{
+								$this->addError("{$item} must include at least one number!.");
+							}
+							if(!preg_match("#[A-Z]+#",$value))
+							{
+								$this->addError("{$item} must include at least one CAPS!.");
+							}
+							if( !preg_match("#\W+#", $value ) ) 
+							{
+								$this->addError("Password must include at least one symbol!");
+							}
 						}
 						break;
 						case 'unique':

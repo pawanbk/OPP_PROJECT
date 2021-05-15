@@ -1,11 +1,13 @@
 <?php 
 class Task_Attachment{
-	private $_data =array(),
+	private $_data,
 	        $_db,
-	        $_count;
+	        $_count=0,
+	        $_attachment;
 
 	public function __construct(){
 		$this->_db = Db::getInstance();
+		$this->_attachment = new Attachment();
 
 	}
 	public function add($fields=array()){
@@ -13,18 +15,25 @@ class Task_Attachment{
 
 	}
 	public function get($where=array()){
-		if (!$this->_db->get('Task_Attachment',$where))
-		{
-			throw new Exception('there was an error');
-		}
-		else{
-			$data = $this->_db->get('task_attachment',$where);
-			$this->_data = $data->results();
-			$this->_count = $data->count();
-			return true;
+		$this->_db->get('task_attachment',$where);
+		if($this->_db->count())
+		{	
+			foreach($this->_db->results() as $data)
+			{
+				if (!$this->_attachment->get(array('id','=',$data->attach_id)))
+				{
+					throw new Exception('there was an error');
+				}
+				else
+				{
+					$this->_attachment->get(array('id','=',$data->attach_id));
+					$this->_data =$this->_attachment->data();
+					$this->_count = $this->_attachment->count();
+					return true;
+				}
+			}
 		}
 		return false;
-
 	}
 	public function remove($where= array()){
 		return $this->_db->delete('task_attachment',$where);
